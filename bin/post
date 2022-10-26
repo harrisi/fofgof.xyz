@@ -1,0 +1,31 @@
+#!/bin/bash
+
+SITE_ROOT="$REPOS/harrisi/fofgof.xyz"
+BLOG_POST_DIR="$SITE_ROOT/blog/post"
+POST_TEMPLATE="$SITE_ROOT/src/html/page-template.html"
+
+# store $IFS for later
+ORIG_IFS="$IFS"
+
+# we still want to use spaces here for updating the title
+NEW_POST_TITLE="$*"
+IFS="-"
+NEW_POST_DIR="$BLOG_POST_DIR/$*"
+IFS="$ORIG_IFS"
+NEW_POST="$NEW_POST_DIR/index.html"
+
+# TODO
+# - move sed commands to file
+# - update post <h2>
+# - update main blog page?
+# - maybe more
+
+if [[ $PWD/ != $SITE_ROOT/* ]]; then
+  echo "Must be used from $SITE_ROOT/*"
+  exit 1
+fi
+
+mkdir $NEW_POST_DIR
+# cp $POST_TEMPLATE $NEW_POST
+sed "s/\(<title>\)\(f*\)/\1$(echo $NEW_POST_TITLE | sed -E 's/\<./\U&/g') | \2/" $POST_TEMPLATE > $NEW_POST
+vim $NEW_POST
